@@ -17,7 +17,7 @@ public class Location {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idlocation;
 	@Column(name="name", nullable=false, length = 50)
-	private String name;
+	public String name;
 	@Column(name="area", nullable=false)
 	private int area;
 	@Column(name="parent_location", nullable=true, length = 50)

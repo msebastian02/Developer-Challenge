@@ -1,7 +1,6 @@
 package com.example.location.rest;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -26,7 +24,6 @@ public class LocationRest {
 	@Autowired
 	private LocationDAO locationDAO;
 	
-	@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST})
 	@GetMapping
 	public ResponseEntity<List<Location>> getLocation(){
 		List<Location> location = locationDAO.findAll();
@@ -35,8 +32,21 @@ public class LocationRest {
 	
 	@PostMapping
 	public ResponseEntity<Location> createLocation (@RequestBody Location location){
-		Location newLocation = locationDAO.save(location);
-		return ResponseEntity.ok(newLocation);
+		List<Location> listLocation = locationDAO.findAll();
+		boolean exist=false;
+		for(Location loc:listLocation) {
+			if(loc.name.toLowerCase().equals(location.name.toLowerCase())) {
+				exist=true;
+			}
+		}
+		if(exist) {
+			return ResponseEntity.badRequest().build();
+		}else {
+			Location newLocation = locationDAO.save(location);
+			return ResponseEntity.ok(newLocation);
+		}
+			
+		
 	}
 	
 	@DeleteMapping(value = "{idLocation}")
